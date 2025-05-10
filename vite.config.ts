@@ -7,11 +7,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://newz-backend.vercel.app/',
+        target: 'http://localhost:3001/',
         changeOrigin: true,
       },
       '/socket.io': {
-        target: 'https://newz-backend.vercel.app/',
+        target: 'http://localhost:3001/',
         changeOrigin: true,
         ws: true,
       },
