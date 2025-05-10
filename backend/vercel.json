@@ -19,7 +19,18 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "index.js"
+      "dest": "index.js",
+      "headers": {
+        "Content-Type": "application/javascript",
+        "Access-Control-Allow-Origin": "*"
+      }
+    },
+    {
+      "src": "/(.*)\\.js$",
+      "headers": {
+        "Content-Type": "application/javascript"
+      },
+      "dest": "$1.js"
     },
     {
       "src": "/health",

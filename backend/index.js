@@ -76,6 +76,14 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
+  // Set proper MIME types for JavaScript modules
+  if (req.url.endsWith('.js')) {
+    res.type('application/javascript');
+  }
+  if (req.url.endsWith('.mjs')) {
+    res.type('application/javascript');
+  }
+  
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
     res.status(200).end();
