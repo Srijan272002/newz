@@ -17,4 +17,20 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        format: 'es',
+        entryFileNames: '[name].[hash].js',
+        chunkFileNames: '[name].[hash].js',
+        assetFileNames: '[name].[hash].[ext]'
+      }
+    },
+    sourcemap: true,
+    minify: 'terser',
+    assetsDir: 'assets'
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom']
+  }
 });
