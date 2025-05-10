@@ -198,12 +198,12 @@ const ChatContainer: React.FC = () => {
   // Clear chat history
   const clearChat = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/chat/${sessionId}`, {
+      const response = await fetchWithTimeout(`${API_BASE_URL}/chat/${sessionId}`, {
         method: 'DELETE'
       });
       
       if (!response.ok) {
-        throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+        throw new Error(`Failed to clear chat: ${response.status} ${response.statusText}`);
       }
       
       setMessages([]);
@@ -283,45 +283,30 @@ const ChatContainer: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Enhanced error handling for fetch requests
+  // Fetch with timeout utility
   const fetchWithTimeout = async (url: string, options: RequestInit = {}) => {
-    const timeout = 8000; // 8 seconds timeout
+    const timeout = 10000; // 10 seconds timeout
+    
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
-
+    
     try {
-      // Ensure no double slashes in URL
-      const cleanUrl = url.replace(/([^:]\/)\/+/g, "$1");
-      
-      const response = await fetch(cleanUrl, {
+      const response = await fetch(url, {
         ...options,
-        credentials: 'include',
+        credentials: 'omit', // Don't include credentials in request
         signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
       });
-
+      
       clearTimeout(id);
-
+      
       if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error(`Endpoint not found: ${cleanUrl}. Please ensure the backend server is running and the endpoint exists.`);
-        }
-        throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+      
       return response;
     } catch (error) {
       clearTimeout(id);
-      if (error instanceof Error) {
-        if (error.name === 'AbortError') {
-          throw new Error('Request timed out. Please check your connection and try again.');
-        }
-        throw error;
-      }
-      throw new Error('An unknown error occurred while connecting to the server.');
+      throw error;
     }
   };
 

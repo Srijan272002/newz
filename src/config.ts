@@ -13,7 +13,6 @@ interface Config {
     secure: boolean;
     autoConnect: boolean;
     forceNew: boolean;
-    extraHeaders?: Record<string, string>;
   };
 }
 
@@ -43,19 +42,16 @@ const production: Config = {
     transports: ['websocket', 'polling'],
     withCredentials: false,
     reconnection: true,
-    reconnectionAttempts: 10,
-    reconnectionDelay: 2000,
-    reconnectionDelayMax: 10000,
-    timeout: 20000,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    timeout: 60000,
     secure: true,
     autoConnect: true,
-    forceNew: true,
-    extraHeaders: {
-      'Access-Control-Allow-Origin': 'https://newz-chi.vercel.app'
-    }
+    forceNew: true
   }
 };
 
-const config: Config = import.meta.env.MODE === 'production' ? production : development;
+const config: Config = import.meta.env ? production : development;
 
 export default config; 
